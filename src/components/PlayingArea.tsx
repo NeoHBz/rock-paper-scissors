@@ -162,7 +162,16 @@ export const PlayingArea: React.FC = () => {
             }
           >
             <div className="scale-x-[-1]">
-              {getHandComponent(isPlaying ? "ROCK" : playerSelectedHand)}
+              <motion.div
+                className="scale-x-[-1]"
+                key={playerSelectedHand}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                {getHandComponent(isPlaying ? "ROCK" : playerSelectedHand)}
+              </motion.div>
             </div>
           </motion.div>
         </motion.div>
@@ -213,13 +222,21 @@ export const PlayingArea: React.FC = () => {
               isPlaying ? createHandshakeAnimation().transition : { duration: 0.4 }
             }
           >
-            {isPlaying ? (
-              <RockHand />
-            ) : opponentHand ? (
-              getHandComponent(opponentHand)
-            ) : (
-              <RockHand />
-            )}
+            <motion.div
+              key={opponentHand || "default"}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              {isPlaying ? (
+                <RockHand />
+              ) : opponentHand ? (
+                getHandComponent(opponentHand)
+              ) : (
+                <RockHand />
+              )}
+            </motion.div>
           </motion.div>
         </motion.div>
       </div>
