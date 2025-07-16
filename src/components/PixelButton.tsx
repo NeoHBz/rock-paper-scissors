@@ -1,7 +1,8 @@
 // pixelated button for game
-import * as motion from "motion/react-client";
+import { motion } from "framer-motion";
+import { type HTMLMotionProps } from "framer-motion";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends Omit<HTMLMotionProps<"button">, "size"> {
   children: React.ReactNode;
   variant?: "primary" | "secondary" | "danger";
   size?: "sm" | "md" | "lg";
