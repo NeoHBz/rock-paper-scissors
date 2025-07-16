@@ -102,7 +102,7 @@ export const PlayingArea: React.FC = () => {
 
   const getResultStyles = (result: string): string => {
     const baseStyles =
-      "text-2xl font-pixeboy text-center px-4 py-2 rounded min-w-[200px]";
+      "text-lg sm:text-xl md:text-2xl lg:text-3xl font-pixeboy text-center px-2 sm:px-4 py-2 rounded min-w-[150px] sm:min-w-[200px] md:min-w-[250px]";
 
     if (result === "You Win!") {
       return `${baseStyles} bg-green-500 text-white`;

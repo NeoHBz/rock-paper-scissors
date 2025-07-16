@@ -5,9 +5,7 @@ export const App = () => {
   return (
     <div className="flex flex-col min-h-screen w-screen">
       <Navbar />
-      <div className="">
-        <HomeScreen />
-      </div>
+      <HomeScreen />
     </div>
   );
 };
