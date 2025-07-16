@@ -5,5 +5,14 @@ interface PaperHandProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 }
 
 export const PaperHand: React.FC<PaperHandProps> = (props) => {
-  return <img alt="Paper Hand" height={200} width={200} {...props} src={PaperImg} />;
+  return (
+    <img
+      draggable={false}
+      alt="Paper Hand"
+      height={200}
+      width={200}
+      {...props}
+      src={PaperImg}
+    />
+  );
 };

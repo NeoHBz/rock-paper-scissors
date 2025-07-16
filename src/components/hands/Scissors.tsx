@@ -5,5 +5,14 @@ interface ScissorsHandProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 }
 
 export const ScissorsHand: React.FC<ScissorsHandProps> = (props) => {
-  return <img alt="Scissors Hand" height={200} width={200} {...props} src={ScissorsImg} />;
+  return (
+    <img
+      draggable={false}
+      alt="Scissors Hand"
+      height={200}
+      width={200}
+      {...props}
+      src={ScissorsImg}
+    />
+  );
 };

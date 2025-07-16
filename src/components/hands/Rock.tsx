@@ -5,5 +5,14 @@ interface RockHandProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 }
 
 export const RockHand: React.FC<RockHandProps> = (props) => {
-  return <img alt="Rock Hand" height={200} width={200} {...props} src={RockImg} />;
+  return (
+    <img
+      draggable={false}
+      alt="Rock Hand"
+      height={200}
+      width={200}
+      {...props}
+      src={RockImg}
+    />
+  );
 };
