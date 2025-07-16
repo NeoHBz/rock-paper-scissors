@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -72,4 +76,22 @@ button:focus-visible {
   -khtml-user-drag: none;
   -moz-user-drag: none;
   -o-user-drag: none;
+}
+
+@font-face {
+  font-family: 'PixelatedElegance';
+  src: url('/fonts/PixelatedElegance.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Pixeboy';
+  src: url('/fonts/Pixeboy.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* hide scrollbars */
+::-webkit-scrollbar {
+  display: none;
 }

@@ -1,3 +1,13 @@
+import { HomeScreen } from "./components/Homescreen";
+import { Navbar } from "./components/Navbar";
+
 export const App = () => {
-  return <></>;
+  return (
+    <div className="flex flex-col min-h-screen w-screen">
+      <Navbar />
+      <div className="">
+        <HomeScreen />
+      </div>
+    </div>
+  );
 };
