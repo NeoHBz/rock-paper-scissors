@@ -1,4 +1,3 @@
-// pixelated button for game
 import { motion } from "framer-motion";
 import { type HTMLMotionProps } from "framer-motion";
 
