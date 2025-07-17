@@ -18,7 +18,7 @@ export const useGameStyles = (breakpoint: Breakpoint) => {
         return `${baseStyles} bg-green-500 text-white`;
       }
       if (result === "CPU Wins!") {
-        return `${baseStyles} bg-red-500 text-white`;
+        return `${baseStyles} bg-red-500/90 text-white`;
       }
       if (result) {
         return `${baseStyles} bg-yellow-500 text-white`;

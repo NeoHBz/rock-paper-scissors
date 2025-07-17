@@ -104,7 +104,7 @@ export const PlayingArea: React.FC = memo(() => {
               {...resultAnimation}
             >
               <span
-                className={`text-center ${textClasses.instruction === "text-lg" ? "text-sm" : "text-sm sm:text-lg md:text-xl lg:text-2xl"} font-pixeboy text-black dark:text-white`}
+                className={`text-center ${textClasses.instruction === "text-lg" ? "text-sm" : "text-sm sm:text-lg md:text-xl lg:text-2xl"} font-pixeboy text-white`}
               >
                 {gameWinner || gameResult || `${settings.winningScore} points to win!`}
               </span>
