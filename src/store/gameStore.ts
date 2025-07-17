@@ -1,12 +1,18 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import type { GameState, GameStats, GameSettings, HANDS, GameResult } from '../types/game';
-import { HANDS_ARRAY, WIN_CONDITIONS, RESULT_MESSAGES } from '../types/game';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type {
+  GameState,
+  GameStats,
+  GameSettings,
+  HANDS,
+  GameResult,
+} from "../types/game";
+import { HANDS_ARRAY, WIN_CONDITIONS, RESULT_MESSAGES } from "../types/game";
 
 interface GameStore extends GameState {
   stats: GameStats;
   settings: GameSettings;
-  
+
   // Actions
   setPlayerSelectedHand: (hand: HANDS) => void;
   setSelectedHandIndex: (index: number) => void;
@@ -70,7 +76,8 @@ export const useGameStore = create<GameStore>()(
       },
 
       setSelectedHandIndex: (index: number) => {
-        const normalizedIndex = ((index % HANDS_ARRAY.length) + HANDS_ARRAY.length) % HANDS_ARRAY.length;
+        const normalizedIndex =
+          ((index % HANDS_ARRAY.length) + HANDS_ARRAY.length) % HANDS_ARRAY.length;
         const hand = HANDS_ARRAY[normalizedIndex];
         set({ selectedHandIndex: normalizedIndex, playerSelectedHand: hand });
       },
@@ -79,13 +86,13 @@ export const useGameStore = create<GameStore>()(
       setGameResult: (result: string) => set({ gameResult: result }),
       setIsPlaying: (playing: boolean) => set({ isPlaying: playing }),
       setGameWinner: (winner: string) => set({ gameWinner: winner }),
-      setHasInitialAnimationCompleted: (completed: boolean) => 
+      setHasInitialAnimationCompleted: (completed: boolean) =>
         set({ hasInitialAnimationCompleted: completed }),
 
       updateScore: (result: GameResult) => {
         const state = get();
         const { playerScore, opponentScore, settings } = state;
-        
+
         if (result === "player") {
           const newScore = playerScore + 1;
           set({ playerScore: newScore });
@@ -99,20 +106,21 @@ export const useGameStore = create<GameStore>()(
             set({ gameWinner: "CPU WINS THE GAME!" });
           }
         }
-        
+
         get().updateStats(result);
       },
 
-      resetGame: () => set({
-        playerScore: 0,
-        opponentScore: 0,
-        opponentHand: null,
-        gameResult: "",
-        playerSelectedHand: "ROCK",
-        selectedHandIndex: 0,
-        isPlaying: false,
-        gameWinner: "",
-      }),
+      resetGame: () =>
+        set({
+          playerScore: 0,
+          opponentScore: 0,
+          opponentHand: null,
+          gameResult: "",
+          playerSelectedHand: "ROCK",
+          selectedHandIndex: 0,
+          isPlaying: false,
+          gameWinner: "",
+        }),
 
       playHand: async () => {
         const state = get();
@@ -121,18 +129,19 @@ export const useGameStore = create<GameStore>()(
         set({ isPlaying: true });
 
         // Simulate handshake animation delay
-        await new Promise<void>((resolve) => 
-          setTimeout(resolve, state.settings.handshakeCount * 500)
+        await new Promise<void>((resolve) =>
+          setTimeout(resolve, state.settings.handshakeCount * 500),
         );
 
         const cpuHand = HANDS_ARRAY[Math.floor(Math.random() * HANDS_ARRAY.length)];
         set({ opponentHand: cpuHand });
 
-        const result = state.playerSelectedHand === cpuHand 
-          ? "tie" 
-          : WIN_CONDITIONS[state.playerSelectedHand] === cpuHand 
-            ? "player" 
-            : "opponent";
+        const result =
+          state.playerSelectedHand === cpuHand
+            ? "tie"
+            : WIN_CONDITIONS[state.playerSelectedHand] === cpuHand
+              ? "player"
+              : "opponent";
 
         get().updateScore(result);
         set({ gameResult: RESULT_MESSAGES[result], isPlaying: false });
@@ -141,15 +150,17 @@ export const useGameStore = create<GameStore>()(
       updateStats: (result: GameResult) => {
         const state = get();
         const newStats = { ...state.stats };
-        
+
         newStats.totalGames++;
         newStats.handUsageStats[state.playerSelectedHand]++;
-        
+
         // Update favorite hand
         const maxUsage = Math.max(...Object.values(newStats.handUsageStats));
-        newStats.favoriteHand = Object.entries(newStats.handUsageStats)
-          .find(([, count]) => count === maxUsage)?.[0] as HANDS || "ROCK";
-        
+        newStats.favoriteHand =
+          (Object.entries(newStats.handUsageStats).find(
+            ([, count]) => count === maxUsage,
+          )?.[0] as HANDS) || "ROCK";
+
         if (result === "player") {
           newStats.wins++;
           newStats.winStreak++;
@@ -162,24 +173,24 @@ export const useGameStore = create<GameStore>()(
             newStats.ties++;
           }
         }
-        
+
         set({ stats: newStats });
       },
 
       updateSettings: (newSettings: Partial<GameSettings>) => {
         const state = get();
-        set({ 
+        set({
           settings: { ...state.settings, ...newSettings },
           winningScore: newSettings.winningScore || state.settings.winningScore,
         });
       },
     }),
     {
-      name: 'rock-paper-scissors-game',
+      name: "rock-paper-scissors-game",
       partialize: (state) => ({
         stats: state.stats,
         settings: state.settings,
       }),
-    }
-  )
+    },
+  ),
 );

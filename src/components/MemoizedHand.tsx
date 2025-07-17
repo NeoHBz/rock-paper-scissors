@@ -1,6 +1,6 @@
-import React, { memo } from 'react';
-import { PaperHand, RockHand, ScissorsHand } from './hands';
-import type { HANDS } from '../types/game';
+import React, { memo } from "react";
+import { PaperHand, RockHand, ScissorsHand } from "./hands";
+import type { HANDS } from "../types/game";
 
 interface MemoizedHandProps {
   hand: HANDS;
@@ -18,4 +18,4 @@ export const MemoizedHand = memo<MemoizedHandProps>(({ hand, smallHands }) => {
   return <HandComponent smallHands={smallHands} />;
 });
 
-MemoizedHand.displayName = 'MemoizedHand';
+MemoizedHand.displayName = "MemoizedHand";

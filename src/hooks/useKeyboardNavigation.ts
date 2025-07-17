@@ -1,5 +1,5 @@
-import { useEffect, useCallback } from 'react';
-import { useGameStore } from '../store/gameStore';
+import { useEffect, useCallback } from "react";
+import { useGameStore } from "../store/gameStore";
 
 export const useKeyboardNavigation = () => {
   const {
@@ -15,46 +15,46 @@ export const useKeyboardNavigation = () => {
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       // Prevent default behavior for space to avoid page scrolling
-      if (event.code === 'Space') {
+      if (event.code === "Space") {
         event.preventDefault();
       }
 
       if (isPlaying) return;
 
       switch (event.key) {
-        case 'ArrowLeft':
+        case "ArrowLeft":
           event.preventDefault();
           setSelectedHandIndex(selectedHandIndex - 1);
           break;
-        case 'ArrowRight':
+        case "ArrowRight":
           event.preventDefault();
           setSelectedHandIndex(selectedHandIndex + 1);
           break;
-        case 'Enter':
-        case ' ': // Space bar
+        case "Enter":
+        case " ": // Space bar
           event.preventDefault();
           if (!gameWinner) {
             playHand();
           }
           break;
-        case 'Escape':
+        case "Escape":
           event.preventDefault();
           resetGame();
           break;
-        case '1':
-          setPlayerSelectedHand('ROCK');
+        case "1":
+          setPlayerSelectedHand("ROCK");
           if (!gameWinner) playHand();
           break;
-        case '2':
-          setPlayerSelectedHand('PAPER');
+        case "2":
+          setPlayerSelectedHand("PAPER");
           if (!gameWinner) playHand();
           break;
-        case '3':
-          setPlayerSelectedHand('SCISSORS');
+        case "3":
+          setPlayerSelectedHand("SCISSORS");
           if (!gameWinner) playHand();
           break;
-        case 'r':
-        case 'R':
+        case "r":
+        case "R":
           event.preventDefault();
           resetGame();
           break;
@@ -70,12 +70,12 @@ export const useKeyboardNavigation = () => {
       setPlayerSelectedHand,
       playHand,
       resetGame,
-    ]
+    ],
   );
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
   return {

@@ -30,8 +30,10 @@ export const PlayingArea: React.FC = memo(() => {
 
   const { breakpoint, isSmallScreen } = useResponsive();
   const { selectedHandIndex: keyboardSelectedIndex } = useKeyboardNavigation();
-  const { handshakeAnimation, scoreAnimation, handTransition, resultAnimation } = useGameAnimations();
-  const { getResultStyles, getHandSelectionStyles, getResponsiveTextClasses } = useGameStyles(breakpoint);
+  const { handshakeAnimation, scoreAnimation, handTransition, resultAnimation } =
+    useGameAnimations();
+  const { getResultStyles, getHandSelectionStyles, getResponsiveTextClasses } =
+    useGameStyles(breakpoint);
 
   const textClasses = getResponsiveTextClasses;
 
@@ -70,12 +72,8 @@ export const PlayingArea: React.FC = memo(() => {
             <motion.div
               className="flex items-center justify-center scale-x-[-1]"
               key={`${playerSelectedHand}-${isPlaying}`}
-              animate={
-                isPlaying ? handshakeAnimation.keyframes : { y: 0, scale: 1 }
-              }
-              transition={
-                isPlaying ? handshakeAnimation.transition : { duration: 0.4 }
-              }
+              animate={isPlaying ? handshakeAnimation.keyframes : { y: 0, scale: 1 }}
+              transition={isPlaying ? handshakeAnimation.transition : { duration: 0.4 }}
             >
               <div className="scale-x-[-1]">
                 <motion.div
@@ -83,9 +81,9 @@ export const PlayingArea: React.FC = memo(() => {
                   key={playerSelectedHand}
                   {...handTransition}
                 >
-                  <MemoizedHand 
-                    hand={isPlaying ? "ROCK" : playerSelectedHand} 
-                    smallHands={isSmallScreen} 
+                  <MemoizedHand
+                    hand={isPlaying ? "ROCK" : playerSelectedHand}
+                    smallHands={isSmallScreen}
                   />
                 </motion.div>
               </div>
@@ -105,7 +103,9 @@ export const PlayingArea: React.FC = memo(() => {
               key={gameWinner || gameResult}
               {...resultAnimation}
             >
-              <span className={`text-center ${ textClasses.instruction === "text-lg" ? "text-sm" : "text-sm sm:text-lg md:text-xl lg:text-2xl" } font-pixeboy text-black dark:text-white`}>
+              <span
+                className={`text-center ${textClasses.instruction === "text-lg" ? "text-sm" : "text-sm sm:text-lg md:text-xl lg:text-2xl"} font-pixeboy text-black dark:text-white`}
+              >
                 {gameWinner || gameResult || `${settings.winningScore} points to win!`}
               </span>
             </motion.div>
@@ -129,17 +129,10 @@ export const PlayingArea: React.FC = memo(() => {
             <motion.div
               className="flex items-center justify-center"
               key={`${opponentHand}-${isPlaying}`}
-              animate={
-                isPlaying ? handshakeAnimation.keyframes : { y: 0, scale: 1 }
-              }
-              transition={
-                isPlaying ? handshakeAnimation.transition : { duration: 0.4 }
-              }
+              animate={isPlaying ? handshakeAnimation.keyframes : { y: 0, scale: 1 }}
+              transition={isPlaying ? handshakeAnimation.transition : { duration: 0.4 }}
             >
-              <motion.div
-                key={opponentHand || "default"}
-                {...handTransition}
-              >
+              <motion.div key={opponentHand || "default"} {...handTransition}>
                 {isPlaying ? (
                   <RockHand smallHands={isSmallScreen} />
                 ) : opponentHand ? (
@@ -194,11 +187,15 @@ export const PlayingArea: React.FC = memo(() => {
 
                 return (
                   <div
-                    onClick={() => !isPlaying && !gameWinner && setPlayerSelectedHand(hand)}
+                    onClick={() =>
+                      !isPlaying && !gameWinner && setPlayerSelectedHand(hand)
+                    }
                     key={hand}
                     className="flex flex-col items-center justify-center"
                   >
-                    <span className={`${breakpoint === "mobile" ? "text-sm" : "text-lg"} font-pixeboy mb-1`}>
+                    <span
+                      className={`${breakpoint === "mobile" ? "text-sm" : "text-lg"} font-pixeboy mb-1`}
+                    >
                       {hand}
                     </span>
                     <motion.div
@@ -214,11 +211,15 @@ export const PlayingArea: React.FC = memo(() => {
                       whileHover={!isPlaying && !gameWinner ? { scale: 1.1 } : {}}
                       whileTap={!isPlaying && !gameWinner ? { scale: 0.9 } : {}}
                       layout
-                      style={{cursor: isPlaying || gameWinner ? "not-allowed" : "pointer" }}
+                      style={{
+                        cursor: isPlaying || gameWinner ? "not-allowed" : "pointer",
+                      }}
                     >
                       <MemoizedHand hand={hand} smallHands={isSmallScreen} />
                     </motion.div>
-                    <span className={`${breakpoint === "mobile" ? "text-xs" : "text-sm"} font-pixeboy mt-1`}>
+                    <span
+                      className={`${breakpoint === "mobile" ? "text-xs" : "text-sm"} font-pixeboy mt-1`}
+                    >
                       {index + 1}
                     </span>
                   </div>
