@@ -6,7 +6,7 @@ export const Footer: React.FC = () => {
           // href="https://neohbz.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-white hover:text-black transition-colors duration-300"
+          className="text-white hover:text-black transition-colors duration-300 font-pixeboy"
         >
           Made with ❤️ by Shalini
         </a>
