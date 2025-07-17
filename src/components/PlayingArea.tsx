@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { PaperHand, RockHand, ScissorsHand } from "./hands";
 import { PixelButton } from "./PixelButton";
 import * as motion from "motion/react-client";
@@ -28,16 +28,18 @@ export const PlayingArea: React.FC = () => {
   const [gameResult, setGameResult] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [gameWinner, setGameWinner] = useState<string>("");
+  const [hasInitialAnimationCompleted, setHasInitialAnimationCompleted] =
+    useState<boolean>(false);
+  const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
 
-  // Customizable handshake count
   const HANDSHAKE_COUNT = 3;
-  const WINNING_SCORE = 1;
+  const WINNING_SCORE = 5;
 
-  const getHandComponent = (hand: HANDS): React.ReactElement => {
+  const getHandComponent = (hand: HANDS, smallHands?: boolean): React.ReactElement => {
     const handComponents: Record<HANDS, React.ReactElement> = {
-      ROCK: <RockHand />,
-      PAPER: <PaperHand />,
-      SCISSORS: <ScissorsHand />,
+      ROCK: <RockHand smallHands={smallHands} />,
+      PAPER: <PaperHand smallHands={smallHands} />,
+      SCISSORS: <ScissorsHand smallHands={smallHands} />,
     };
     return handComponents[hand];
   };
@@ -51,26 +53,28 @@ export const PlayingArea: React.FC = () => {
     return WIN_CONDITIONS[playerHand] === opponentHand ? "player" : "opponent";
   };
 
-  const updateScore = (result: GameResult): void => {
-    if (result === "player") {
-      const newScore = playerScore + 1;
-      setPlayerScore(newScore);
-      if (newScore >= WINNING_SCORE) {
-        setGameWinner("PLAYER WINS THE GAME!");
+  const updateScore = useCallback(
+    (result: GameResult): void => {
+      if (result === "player") {
+        const newScore = playerScore + 1;
+        setPlayerScore(newScore);
+        if (newScore >= WINNING_SCORE) {
+          setGameWinner("PLAYER WINS THE GAME!");
+        }
+      } else if (result === "opponent") {
+        const newScore = opponentScore + 1;
+        setOpponentScore(newScore);
+        if (newScore >= WINNING_SCORE) {
+          setGameWinner("CPU WINS THE GAME!");
+        }
       }
-    } else if (result === "opponent") {
-      const newScore = opponentScore + 1;
-      setOpponentScore(newScore);
-      if (newScore >= WINNING_SCORE) {
-        setGameWinner("CPU WINS THE GAME!");
-      }
-    }
-  };
+    },
+    [playerScore, opponentScore, WINNING_SCORE],
+  );
 
   const createHandshakeAnimation = (shakeCount: number = HANDSHAKE_COUNT) => {
     const keyframes: Record<string, number[] | number> = { scale: [1, 0.9, 1] };
 
-    // Create shake pattern for n times
     const shakePattern: number[] = [];
     for (let i = 0; i < shakeCount; i++) {
       shakePattern.push(0, -10, 0, 10, 0);
@@ -86,12 +90,11 @@ export const PlayingArea: React.FC = () => {
     };
   };
 
-  const handlePlayHand = async (): Promise<void> => {
-    if (gameWinner) return; // Prevent playing if game is over
+  const handlePlayHand = useCallback(async (): Promise<void> => {
+    if (gameWinner) return;
 
     setIsPlaying(true);
 
-    // Wait for handshake animation to complete
     await new Promise<void>((resolve) => setTimeout(resolve, HANDSHAKE_COUNT * 500));
 
     const cpuHand = generateOpponentHand();
@@ -101,7 +104,7 @@ export const PlayingArea: React.FC = () => {
     updateScore(result);
     setGameResult(RESULT_MESSAGES[result]);
     setIsPlaying(false);
-  };
+  }, [gameWinner, playerSelectedHand, updateScore]);
 
   const resetGame = (): void => {
     setPlayerScore(0);
@@ -134,13 +137,69 @@ export const PlayingArea: React.FC = () => {
 
   const getHandSelectionStyles = (_hand: HANDS, isSelected: boolean): string => {
     const baseStyles =
-      "card w-24 h-24 flex items-center justify-center cursor-pointer transition-all duration-200";
+      "card w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 flex items-center justify-center cursor-pointer transition-all duration-200";
     const selectedStyles = isSelected
-      ? "bg-blue-500 text-white border-4 border-blue-700"
-      : "bg-gray-200 text-black border-2 border-gray-400";
+      ? "bg-blue-500 text-white border-2 sm:border-3 md:border-4 border-blue-700"
+      : "bg-gray-200 text-black border border-gray-400 sm:border-2";
 
     return `${baseStyles} ${selectedStyles}`;
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHasInitialAnimationCompleted(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+
+    const handleMediaChange = (e: MediaQueryListEvent) => {
+      setIsSmallScreen(e.matches);
+    };
+
+    setIsSmallScreen(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleMediaChange);
+
+    return () => mediaQuery.removeEventListener("change", handleMediaChange);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (isPlaying) return;
+
+      let shouldPlay = false;
+
+      switch (event.key) {
+        case "1":
+          setPlayerSelectedHand("ROCK");
+          shouldPlay = true;
+          break;
+        case "2":
+          setPlayerSelectedHand("PAPER");
+          shouldPlay = true;
+          break;
+        case "3":
+          setPlayerSelectedHand("SCISSORS");
+          shouldPlay = true;
+          break;
+        default:
+          return;
+      }
+
+      if (shouldPlay && !isPlaying && !gameWinner) {
+        handlePlayHand();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [isPlaying, gameWinner, handlePlayHand]);
 
   return (
     <motion.div
@@ -208,7 +267,8 @@ export const PlayingArea: React.FC = () => {
             transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
           >
             <span className="text-center text-sm sm:text-lg md:text-xl lg:text-2xl font-pixeboy text-black dark:text-white">
-              {gameWinner || gameResult || `${WINNING_SCORE} points to win!`}</span>
+              {gameWinner || gameResult || `${WINNING_SCORE} points to win!`}
+            </span>
           </motion.div>
         </motion.div>
 
@@ -290,7 +350,14 @@ export const PlayingArea: React.FC = () => {
 
         {/* Hand Selection */}
         <div>
-          <div className="text-2xl font-pixeboy text-center">Choose your hand:</div>
+          <div className="font-pixeboy text-center text-2xl sm:text-3xl md:text-4xl lg:text-4xl mb-2">
+            Click to choose your hand:
+          </div>
+          {!isSmallScreen && (
+            <div className="font-pixeboy text-center text-xl sm:text-xl md:text-2xl lg:text-2xl mb-4">
+              Or Press 1, 2, 3 on keyboard
+            </div>
+          )}
           <div className="flex items-center justify-center gap-4 mt-4">
             {HANDS_ARRAY.map((hand, index) => (
               <div
@@ -304,14 +371,19 @@ export const PlayingArea: React.FC = () => {
                   className={getHandSelectionStyles(hand, playerSelectedHand === hand)}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.4 + index * 0.1 }}
+                  transition={
+                    hasInitialAnimationCompleted
+                      ? { duration: 0.1 }
+                      : { duration: 0.5, delay: 0.6 + index * 0.1 }
+                  }
                   whileHover={!isPlaying && !gameWinner ? { scale: 1.1 } : {}}
                   whileTap={!isPlaying && !gameWinner ? { scale: 0.9 } : {}}
                   layout
                   style={{ cursor: isPlaying || gameWinner ? "not-allowed" : "pointer" }}
                 >
-                  {getHandComponent(hand)}
+                  {getHandComponent(hand, isSmallScreen)}
                 </motion.div>
+                {index + 1}
               </div>
             ))}
           </div>

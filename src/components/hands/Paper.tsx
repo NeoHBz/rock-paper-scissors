@@ -2,6 +2,7 @@ import PaperImg from "../../assets/paper.png";
 
 interface PaperHandProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   alt?: string;
+  smallHands?: boolean;
 }
 
 export const PaperHand: React.FC<PaperHandProps> = (props) => {
@@ -9,8 +10,8 @@ export const PaperHand: React.FC<PaperHandProps> = (props) => {
     <img
       draggable={false}
       alt="Paper Hand"
-      height={200}
-      width={200}
+      height={props.smallHands ? 100 : 200}
+      width={props.smallHands ? 100 : 200}
       {...props}
       src={PaperImg}
     />
