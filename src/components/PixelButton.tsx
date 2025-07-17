@@ -7,6 +7,7 @@ interface ButtonProps extends Omit<HTMLMotionProps<"div">, "size"> {
   size?: "sm" | "md" | "lg";
   responsive?: boolean;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 export const PixelButton: React.FC<ButtonProps> = ({
@@ -15,6 +16,7 @@ export const PixelButton: React.FC<ButtonProps> = ({
   size = "md",
   responsive = true,
   className = "",
+  disabled = false,
   ...props
 }) => {
   const getVariantStyles = () => {
@@ -67,13 +69,14 @@ export const PixelButton: React.FC<ButtonProps> = ({
     <motion.div
       {...props}
       role="button"
-      tabIndex={0}
-      className={`bg-transparent cursor-pointer`}
-      whileTap={{
+      tabIndex={disabled ? -1 : 0}
+      aria-disabled={disabled}
+      className={`bg-transparent ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+      whileTap={disabled ? undefined : {
         y: 2,
         transition: { duration: 0.1 },
       }}
-      whileHover={{
+      whileHover={disabled ? undefined : {
         scale: 1.02,
         transition: { duration: 0.1 },
       }}
@@ -84,11 +87,13 @@ export const PixelButton: React.FC<ButtonProps> = ({
         damping: 25,
       }}
       onKeyDown={(e) => {
+        if (disabled) return;
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           props.onClick?.();
         }
       }}
+      onClick={disabled ? undefined : props.onClick}
     >
       <span
         className={`
@@ -98,12 +103,12 @@ export const PixelButton: React.FC<ButtonProps> = ({
         ${getSizeStyles()}
         ${getVariantStyles()}
         outline outline-black
-        active:translate-y-0.5 
+        ${disabled ? '' : 'active:translate-y-0.5'}
         transition-all duration-100
         image-rendering-pixelated
         select-none
-        ${getResponsiveShadows()}
-        disabled:opacity-50 disabled:cursor-not-allowed
+        ${disabled ? '' : getResponsiveShadows()}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         ${className}
       `}
       >
