@@ -27,9 +27,11 @@ export const PlayingArea: React.FC = () => {
   const [opponentHand, setOpponentHand] = useState<HANDS | null>(null);
   const [gameResult, setGameResult] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [gameWinner, setGameWinner] = useState<string>("");
 
   // Customizable handshake count
   const HANDSHAKE_COUNT = 3;
+  const WINNING_SCORE = 5;
 
   const getHandComponent = (hand: HANDS): React.ReactElement => {
     const handComponents: Record<HANDS, React.ReactElement> = {
@@ -51,9 +53,17 @@ export const PlayingArea: React.FC = () => {
 
   const updateScore = (result: GameResult): void => {
     if (result === "player") {
-      setPlayerScore((prev) => prev + 1);
+      const newScore = playerScore + 1;
+      setPlayerScore(newScore);
+      if (newScore >= WINNING_SCORE) {
+        setGameWinner("🎉 PLAYER WINS THE GAME! 🎉");
+      }
     } else if (result === "opponent") {
-      setOpponentScore((prev) => prev + 1);
+      const newScore = opponentScore + 1;
+      setOpponentScore(newScore);
+      if (newScore >= WINNING_SCORE) {
+        setGameWinner("💻 CPU WINS THE GAME! 💻");
+      }
     }
   };
 
@@ -77,6 +87,8 @@ export const PlayingArea: React.FC = () => {
   };
 
   const handlePlayHand = async (): Promise<void> => {
+    if (gameWinner) return; // Prevent playing if game is over
+    
     setIsPlaying(true);
 
     // Wait for handshake animation to complete
@@ -98,12 +110,16 @@ export const PlayingArea: React.FC = () => {
     setGameResult("");
     setPlayerSelectedHand("ROCK");
     setIsPlaying(false);
+    setGameWinner("");
   };
 
   const getResultStyles = (result: string): string => {
     const baseStyles =
       "text-lg sm:text-xl md:text-2xl lg:text-3xl font-pixeboy text-center px-2 sm:px-4 py-2 rounded min-w-[150px] sm:min-w-[200px] md:min-w-[250px]";
 
+    if (gameWinner) {
+      return `${baseStyles} bg-gradient-to-r from-purple-500 to-pink-500 text-white animate-pulse`;
+    }
     if (result === "You Win!") {
       return `${baseStyles} bg-green-500 text-white`;
     }
@@ -186,12 +202,12 @@ export const PlayingArea: React.FC = () => {
           <div className="text-4xl font-pixeboy mb-4">VS</div>
           <motion.div
             className={getResultStyles(gameResult)}
-            key={gameResult}
+            key={gameWinner || gameResult}
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
           >
-            {gameResult || "5 points to win!"}
+            {gameWinner || gameResult || `${WINNING_SCORE} points to win!`}
           </motion.div>
         </motion.div>
 
@@ -243,7 +259,7 @@ export const PlayingArea: React.FC = () => {
 
       {/* Controls Section */}
       <motion.div
-        className="flex flex-col items-center justify-center mt-12"
+        className="flex flex-col items-center justify-center mt-2"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
@@ -254,9 +270,9 @@ export const PlayingArea: React.FC = () => {
               onClick={handlePlayHand}
               variant="secondary"
               className="text-2xl font-pixeboy"
-              disabled={isPlaying}
+              disabled={isPlaying || !!gameWinner}
             >
-              {isPlaying ? "PLAYING..." : "PLAY"}
+              {isPlaying ? "PLAYING..." : gameWinner ? "GAME OVER" : "PLAY"}
             </PixelButton>
           </motion.div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -266,30 +282,36 @@ export const PlayingArea: React.FC = () => {
               className="text-2xl font-pixeboy"
               disabled={isPlaying}
             >
-              RESET
+              {gameWinner ? "NEW GAME" : "RESET"}
             </PixelButton>
           </motion.div>
         </div>
 
         {/* Hand Selection */}
         <div>
-          <div className="text-2xl font-pixeboy text-center mt-4">Choose your hand:</div>
+          <div className="text-2xl font-pixeboy text-center">Choose your hand:</div>
           <div className="flex items-center justify-center gap-4 mt-4">
             {HANDS_ARRAY.map((hand, index) => (
-              <motion.div
+              <div
+                onClick={() => !isPlaying && !gameWinner && setPlayerSelectedHand(hand)}
                 key={hand}
-                className={getHandSelectionStyles(hand, playerSelectedHand === hand)}
-                onClick={() => !isPlaying && setPlayerSelectedHand(hand)}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.4 + index * 0.1 }}
-                whileHover={!isPlaying ? { scale: 1.1 } : {}}
-                whileTap={!isPlaying ? { scale: 0.9 } : {}}
-                layout
-                style={{ cursor: isPlaying ? "not-allowed" : "pointer" }}
+                className="flex flex-col items-center justify-center"
               >
-                {getHandComponent(hand)}
-              </motion.div>
+                <span className="text-lg font-pixeboy mb-1">{hand}</span>
+                <motion.div
+                  key={hand}
+                  className={getHandSelectionStyles(hand, playerSelectedHand === hand)}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.4 + index * 0.1 }}
+                  whileHover={!isPlaying && !gameWinner ? { scale: 1.1 } : {}}
+                  whileTap={!isPlaying && !gameWinner ? { scale: 0.9 } : {}}
+                  layout
+                  style={{ cursor: isPlaying || gameWinner ? "not-allowed" : "pointer" }}
+                >
+                  {getHandComponent(hand)}
+                </motion.div>
+              </div>
             ))}
           </div>
         </div>
