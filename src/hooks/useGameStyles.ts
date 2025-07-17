@@ -70,7 +70,7 @@ export const useGameStyles = (breakpoint: Breakpoint) => {
         : "text-2xl sm:text-3xl md:text-4xl lg:text-4xl",
       subInstruction: breakpoint === 'mobile' 
         ? "text-sm" 
-        : "text-xl sm:text-xl md:text-2xl lg:text-2xl",
+        : "text-lg sm:text-lg md:text-xl lg:text-xl",
     };
   }, [breakpoint]);
 

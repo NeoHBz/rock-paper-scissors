@@ -51,7 +51,7 @@ export const PlayingArea: React.FC = memo(() => {
         transition={{ duration: 0.5 }}
       >
         {/* Game Board */}
-        <div className={`flex ${breakpoint === 'mobile' ? 'gap-4' : 'gap-12'}`}>
+        <div className={`flex ${breakpoint === "mobile" ? "gap-4" : "gap-12"}`}>
           {/* Player Section */}
           <motion.div
             className="flex flex-col gap-4 w-1/3"
@@ -105,7 +105,7 @@ export const PlayingArea: React.FC = memo(() => {
               key={gameWinner || gameResult}
               {...resultAnimation}
             >
-              <span className={`text-center ${textClasses.instruction === 'text-lg' ? 'text-sm' : 'text-sm sm:text-lg md:text-xl lg:text-2xl'} font-pixeboy text-black dark:text-white`}>
+              <span className={`text-center ${ textClasses.instruction === "text-lg" ? "text-sm" : "text-sm sm:text-lg md:text-xl lg:text-2xl" } font-pixeboy text-black dark:text-white`}>
                 {gameWinner || gameResult || `${settings.winningScore} points to win!`}
               </span>
             </motion.div>
@@ -159,12 +159,12 @@ export const PlayingArea: React.FC = memo(() => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <div className={`flex gap-4 ${breakpoint === 'mobile' ? 'mb-2' : 'mb-4'}`}>
+          <div className={`flex gap-4 ${breakpoint === "mobile" ? "mb-2" : "mb-4"}`}>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <PixelButton
                 onClick={playHand}
                 variant="secondary"
-                className={`${breakpoint === 'mobile' ? 'text-lg' : 'text-2xl'} font-pixeboy`}
+                className={`${breakpoint === "mobile" ? "text-lg" : "text-2xl"} font-pixeboy`}
                 disabled={isPlaying || !!gameWinner}
               >
                 {isPlaying ? "PLAYING..." : gameWinner ? "GAME OVER" : "PLAY"}
@@ -174,7 +174,7 @@ export const PlayingArea: React.FC = memo(() => {
               <PixelButton
                 onClick={resetGame}
                 variant="danger"
-                className={`${breakpoint === 'mobile' ? 'text-lg' : 'text-2xl'} font-pixeboy`}
+                className={`${breakpoint === "mobile" ? "text-lg" : "text-2xl"} font-pixeboy`}
                 disabled={isPlaying}
               >
                 {gameWinner ? "NEW GAME" : "RESET"}
@@ -184,26 +184,21 @@ export const PlayingArea: React.FC = memo(() => {
 
           {/* Hand Selection */}
           <div>
-            <div className={`font-pixeboy text-center ${textClasses.instruction} mb-2`}>
+            <div className={`font-pixeboy text-center ${textClasses.instruction}`}>
               Click to choose your hand:
             </div>
-            {!isSmallScreen && (
-              <div className={`font-pixeboy text-center ${textClasses.subInstruction} mb-4`}>
-                Use ←→ arrows to navigate, Space/Enter to play, 1-3 for quick select
-              </div>
-            )}
-            <div className="flex items-center justify-center gap-4 mt-4">
+            <div className="flex items-center justify-center gap-4">
               {HANDS_ARRAY.map((hand, index) => {
                 const isSelected = playerSelectedHand === hand;
                 const isFocused = keyboardSelectedIndex === index;
-                
+
                 return (
                   <div
                     onClick={() => !isPlaying && !gameWinner && setPlayerSelectedHand(hand)}
                     key={hand}
                     className="flex flex-col items-center justify-center"
                   >
-                    <span className={`${breakpoint === 'mobile' ? 'text-sm' : 'text-lg'} font-pixeboy mb-1`}>
+                    <span className={`${breakpoint === "mobile" ? "text-sm" : "text-lg"} font-pixeboy mb-1`}>
                       {hand}
                     </span>
                     <motion.div
@@ -219,17 +214,25 @@ export const PlayingArea: React.FC = memo(() => {
                       whileHover={!isPlaying && !gameWinner ? { scale: 1.1 } : {}}
                       whileTap={!isPlaying && !gameWinner ? { scale: 0.9 } : {}}
                       layout
-                      style={{ cursor: isPlaying || gameWinner ? "not-allowed" : "pointer" }}
+                      style={{cursor: isPlaying || gameWinner ? "not-allowed" : "pointer" }}
                     >
                       <MemoizedHand hand={hand} smallHands={isSmallScreen} />
                     </motion.div>
-                    <span className={`${breakpoint === 'mobile' ? 'text-xs' : 'text-sm'} font-pixeboy mt-1`}>
+                    <span className={`${breakpoint === "mobile" ? "text-xs" : "text-sm"} font-pixeboy mt-1`}>
                       {index + 1}
                     </span>
                   </div>
                 );
               })}
             </div>
+            {!isSmallScreen && (
+              <div
+                className={`font-pixeboy text-center ${textClasses.subInstruction} mb-4`}
+              >
+                Use ←→ arrows to navigate
+                <br /> Space/Enter to play, 1-3 for quick select
+              </div>
+            )}
           </div>
         </motion.div>
       </motion.div>
