@@ -31,7 +31,7 @@ export const PlayingArea: React.FC = () => {
 
   // Customizable handshake count
   const HANDSHAKE_COUNT = 3;
-  const WINNING_SCORE = 5;
+  const WINNING_SCORE = 1;
 
   const getHandComponent = (hand: HANDS): React.ReactElement => {
     const handComponents: Record<HANDS, React.ReactElement> = {
@@ -56,13 +56,13 @@ export const PlayingArea: React.FC = () => {
       const newScore = playerScore + 1;
       setPlayerScore(newScore);
       if (newScore >= WINNING_SCORE) {
-        setGameWinner("🎉 PLAYER WINS THE GAME! 🎉");
+        setGameWinner("PLAYER WINS THE GAME!");
       }
     } else if (result === "opponent") {
       const newScore = opponentScore + 1;
       setOpponentScore(newScore);
       if (newScore >= WINNING_SCORE) {
-        setGameWinner("💻 CPU WINS THE GAME! 💻");
+        setGameWinner("CPU WINS THE GAME!");
       }
     }
   };
@@ -88,7 +88,7 @@ export const PlayingArea: React.FC = () => {
 
   const handlePlayHand = async (): Promise<void> => {
     if (gameWinner) return; // Prevent playing if game is over
-    
+
     setIsPlaying(true);
 
     // Wait for handshake animation to complete
@@ -207,7 +207,8 @@ export const PlayingArea: React.FC = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
           >
-            {gameWinner || gameResult || `${WINNING_SCORE} points to win!`}
+            <span className="text-center text-sm sm:text-lg md:text-xl lg:text-2xl font-pixeboy text-black dark:text-white">
+              {gameWinner || gameResult || `${WINNING_SCORE} points to win!`}</span>
           </motion.div>
         </motion.div>
 
