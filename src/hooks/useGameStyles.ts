@@ -6,13 +6,13 @@ export const useGameStyles = (breakpoint: Breakpoint) => {
     return (result: string, gameWinner: string) => {
       const baseStyles =
         breakpoint === "mobile"
-          ? "text-sm font-pixeboy text-center px-2 py-2 rounded min-w-[120px]"
+          ? "text-sm font-pixeboy text-center px-2 py-2 rounded-sm min-w-[120px]"
           : breakpoint === "tablet"
-            ? "text-lg font-pixeboy text-center px-3 py-2 rounded min-w-[180px]"
-            : "text-lg sm:text-xl md:text-2xl lg:text-3xl font-pixeboy text-center px-2 sm:px-4 py-2 rounded min-w-[150px] sm:min-w-[200px] md:min-w-[250px]";
+            ? "text-lg font-pixeboy text-center px-3 py-2 rounded-sm min-w-[180px]"
+            : "text-lg sm:text-xl md:text-2xl lg:text-3xl font-pixeboy text-center px-2 sm:px-4 py-2 rounded-sm min-w-[150px] sm:min-w-[200px] md:min-w-[250px]";
 
       if (gameWinner) {
-        return `${baseStyles} bg-gradient-to-r from-purple-500 to-pink-500 text-white animate-pulse`;
+        return `${baseStyles} bg-linear-to-r from-purple-500 to-pink-500 text-white animate-pulse`;
       }
       if (result === "You Win!") {
         return `${baseStyles} bg-green-500 text-white`;

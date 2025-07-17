@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
 import { type HTMLMotionProps } from "framer-motion";
 
-interface ButtonProps extends Omit<HTMLMotionProps<"button">, "size"> {
+interface ButtonProps extends Omit<HTMLMotionProps<"div">, "size"> {
   children: React.ReactNode;
   variant?: "primary" | "secondary" | "danger";
   size?: "sm" | "md" | "lg";
   responsive?: boolean;
+  onClick?: () => void;
 }
 
 export const PixelButton: React.FC<ButtonProps> = ({
@@ -29,7 +30,7 @@ export const PixelButton: React.FC<ButtonProps> = ({
 
   const getSizeStyles = () => {
     if (responsive) {
-      return "text-sm px-3 py-2 border-2 outline-2 sm:text-lg sm:px-4 sm:py-2 sm:border-3 md:text-xl md:px-6 md:py-3 md:border-4 md:outline-4 lg:text-2xl lg:px-8 lg:py-4";
+      return "text-md px-3 py-1 border-2 outline-2 sm:text-xl sm:px-4 sm:py-1 sm:border-3 md:text-2xl md:px-6 md:py-2 md:border-4 md:outline-4 lg:text-3xl lg:px-8 lg:py-3";
     }
 
     switch (size) {
@@ -63,22 +64,11 @@ export const PixelButton: React.FC<ButtonProps> = ({
   };
 
   return (
-    <motion.button
+    <motion.div
       {...props}
-      className={`
-        font-pixel uppercase text-white
-        ${getSizeStyles()}
-        ${getVariantStyles()}
-        outline outline-black
-        active:translate-y-0.5 
-        transition-all duration-100
-        image-rendering-pixelated
-        cursor-pointer
-        select-none
-        ${getResponsiveShadows()}
-        disabled:opacity-50 disabled:cursor-not-allowed
-        ${className}
-      `}
+      role="button"
+      tabIndex={0}
+      className={`bg-transparent cursor-pointer`}
       whileTap={{
         y: 2,
         transition: { duration: 0.1 },
@@ -93,8 +83,32 @@ export const PixelButton: React.FC<ButtonProps> = ({
         stiffness: 400,
         damping: 25,
       }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          props.onClick?.();
+        }
+      }}
     >
-      {children}
-    </motion.button>
+      <span
+        className={`
+        font-pixel 
+        uppercase text-white
+        block
+        ${getSizeStyles()}
+        ${getVariantStyles()}
+        outline outline-black
+        active:translate-y-0.5 
+        transition-all duration-100
+        image-rendering-pixelated
+        select-none
+        ${getResponsiveShadows()}
+        disabled:opacity-50 disabled:cursor-not-allowed
+        ${className}
+      `}
+      >
+        {children}
+      </span>
+    </motion.div>
   );
 };
