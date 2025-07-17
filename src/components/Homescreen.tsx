@@ -15,6 +15,11 @@ export const HomeScreen: React.FC = () => {
     <div className="flex flex-col items-center justify-center space-x-12 h-screen w-screen gap-12">
       {activeScreen === "HOME" && (
         <div>
+          <div className="flex items-center justify-center mb-8">
+            <h1 className="text-6xl font-pixeboy text-center mb-4">
+              Rock Paper Scissors
+            </h1>
+          </div>
           <div className="flex items-center space-y-4 gap-12">
             <FloatingHandMotion delay={0}>
               <RockHand />
