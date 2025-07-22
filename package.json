@@ -1,7 +1,12 @@
 {
   "name": "rock-paper-scissor",
   "private": true,
-  "version": "0.0.0",
+  "author": {
+    "email": "neohbz@gmail.com",
+    "name": "NeoHBz",
+    "url": "https://neohbz.com"
+  },
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
